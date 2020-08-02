@@ -1,6 +1,35 @@
 from pages.product_page import ProductPage
 from pages.basket_page import BasketPage
+from pages.login_page import LoginPage
 import pytest
+import time
+
+
+class TestUserAddToBasketFromProductPage():
+    @pytest.fixture(scope='function', autouse=True)
+    def setup(self, browser):
+        link = 'http://selenium1py.pythonanywhere.com/accounts/login/'
+        eml = str(time.time()) + "@fakemail.org"
+        pswd = '7ehz3gOoD1'
+        page = LoginPage(browser, link)
+        page.open()
+        page.register_new_user(eml, pswd)
+        page.should_be_authorized_user()
+
+    def test_user_cant_see_success_message(self, browser):
+        link = 'http://selenium1py.pythonanywhere.com/catalogue/coders-at-work_207/'
+        page = ProductPage(browser, link)
+        page.open()
+        page.should_not_be_success_message()
+
+    def test_user_can_add_product_to_basket(self, browser, link):
+        link = 'http://selenium1py.pythonanywhere.com/catalogue/coders-at-work_207/?promo=offer0'
+        page = ProductPage(browser, link)
+        page.open()
+        page.add_item_to_basket()
+        page.solve_quiz_and_get_code()
+        page.should_be_right_alert_item_name()
+        page.should_be_right_basket_total()
 
 
 @pytest.mark.parametrize('link', ["http://selenium1py.pythonanywhere.com/catalogue/coders-at-work_207/?promo=offer0",
@@ -13,7 +42,7 @@ import pytest
                                   pytest.param("http://selenium1py.pythonanywhere.com/catalogue/coders-at-work_207/?promo=offer7", marks=pytest.mark.xfail),
                                   "http://selenium1py.pythonanywhere.com/catalogue/coders-at-work_207/?promo=offer8",
                                   "http://selenium1py.pythonanywhere.com/catalogue/coders-at-work_207/?promo=offer9"])
-def test_guest_can_add_product_to_basket(browser, link):
+def test_guest_can_add_product_to_basket(self, browser, link):
     page = ProductPage(browser, link)
     page.open()
     page.add_item_to_basket()
