@@ -4,7 +4,7 @@ colorama==0.4.3  # dependencies
 more-itertools==8.4.0  # dependencies
 packaging==20.4  # dependencies
 pluggy==0.13.1  # dependencies
-py==1.9.0  # dependencies
+py==1.10.0  # dependencies
 pyparsing==2.4.7  # dependencies
 pytest==5.4.3
 selenium==3.141.0
